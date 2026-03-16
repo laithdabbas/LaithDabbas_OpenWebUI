@@ -261,7 +261,19 @@ async def ldap_auth(request: Request, response: Response, form_data: LdapForm):
             user = Users.get_user_by_email(email)
             if not user:
                 try:
-                    user_count = Users.get_num_users()
+                    user_count = Users.get_num_users() or 0
+
+                    try:
+                        check_user_limit(current_user_count=user_count)
+                    except LicenseLimitExceeded:
+                        raise HTTPException(
+                            status_code=403, detail="License user limit reached"
+                        )
+                    except LicenseInvalidError as err:
+                        log.error(f"License validation failed: {err}")
+                        raise HTTPException(
+                            status_code=403, detail="License invalid or missing"
+                        )
 
                     role = (
                         "admin"
