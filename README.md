@@ -57,7 +57,7 @@ License limit reached
 
 ## 2. Additional Feature
 
-*(Replace this section with the feature you implemented)*
+
 
 Example:
 
